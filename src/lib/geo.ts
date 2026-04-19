@@ -7,7 +7,7 @@ export type MultiPolygon = Polygon[];
 
 export type Feature = {
   type: "Feature";
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   geometry:
     | { type: "Polygon"; coordinates: Polygon }
     | { type: "MultiPolygon"; coordinates: MultiPolygon };

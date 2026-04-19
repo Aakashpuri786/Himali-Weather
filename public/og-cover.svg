@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Himali Weather</title>
+  <desc id="desc">Nepal weather by district with live forecasts for all 77 districts.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f4ede1" />
+      <stop offset="50%" stop-color="#ece2cf" />
+      <stop offset="100%" stop-color="#d9c9a7" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <circle cx="980" cy="120" r="62" fill="#ffd166" />
+  <path d="M70 470 L250 250 L360 390 L510 170 L700 380 L860 220 L1035 420 L1135 420 L1135 520 L70 520 Z" fill="#c0392b" opacity="0.9" />
+  <path d="M70 540 L250 330 L360 455 L510 250 L700 450 L860 305 L1035 495 L1135 495 L1135 560 L70 560 Z" fill="#1b4332" opacity="0.88" />
+  <text x="78" y="150" font-size="56" font-family="Georgia, serif" fill="#1a1410">Himali Weather</text>
+  <text x="78" y="235" font-size="88" font-family="Georgia, serif" font-weight="700" fill="#1a1410">
+    Nepal Weather by District
+  </text>
+  <text x="78" y="305" font-size="34" font-family="Verdana, sans-serif" fill="#544637">
+    Live temperature, humidity, wind, sunrise, sunset, and a 7-day forecast
+  </text>
+  <text x="78" y="352" font-size="34" font-family="Verdana, sans-serif" fill="#544637">
+    for all 77 districts of Nepal.
+  </text>
+</svg>

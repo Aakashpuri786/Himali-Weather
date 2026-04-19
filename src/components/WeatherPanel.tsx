@@ -36,9 +36,12 @@ export default function WeatherPanel({ districtName, province, lon, lat }: Props
   useEffect(() => {
     if (lat == null || lon == null) return;
     let cancel = false;
-    setLoading(true);
-    setError(null);
-    setData(null);
+    queueMicrotask(() => {
+      if (cancel) return;
+      setLoading(true);
+      setError(null);
+      setData(null);
+    });
     fetchWeather(lat, lon)
       .then((d) => !cancel && setData(d))
       .catch((e) => !cancel && setError(String(e?.message ?? e)))

@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/district/:slug",
+      "destination": "/"
+    }
+  ]
+}

@@ -1,14 +1,17 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig, type PluginOption } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig(async () => {
-  const plugins = [react(), tailwindcss()];
+  const plugins: PluginOption[] = [react(), tailwindcss()];
   try {
-    // @ts-ignore
-    const m = await import('./.vite-source-tags.js');
-    plugins.push(m.sourceTags());
-  } catch {}
+    const module = (await import("./.vite-source-tags.js")) as { sourceTags?: () => PluginOption };
+    if (typeof module.sourceTags === "function") {
+      plugins.push(module.sourceTags());
+    }
+  } catch {
+    // Source tags are optional outside the generation environment.
+  }
   return { plugins };
-})
+});
