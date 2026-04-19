@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #f4ede1;
+  --color-bg-2: #ece2cf;
+  --color-ink: #1a1410;
+  --color-ink-soft: #544637;
+  --color-line: #c9b99a;
+  --color-accent: #c0392b;
+  --color-accent-2: #1b4332;
+  --color-gold: #c89b3c;
+  --color-sky: #2a5a7a;
+  --font-display: "Fraunces", serif;
+  --font-body: "Manrope", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(192, 57, 43, 0.06), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(27, 67, 50, 0.07), transparent 45%),
+    repeating-linear-gradient(45deg, rgba(26,20,16,0.015) 0 1px, transparent 1px 8px);
+}
+
+.font-display { font-family: var(--font-display); font-variation-settings: "opsz" 96; }
+.font-mono    { font-family: var(--font-mono); }
+
+/* Map styling */
+.district-path {
+  cursor: pointer;
+  transition: fill 150ms ease, stroke-width 150ms ease, filter 200ms ease;
+}
+.district-path:hover {
+  filter: brightness(1.08) drop-shadow(0 2px 6px rgba(0,0,0,0.18));
+}
+
+.province-path {
+  pointer-events: none;
+}
+
+/* Subtle paper grain */
+.paper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(0,0,0,0.04) 1px, transparent 1px);
+  background-size: 3px 3px;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+@keyframes drawIn {
+  from { stroke-dashoffset: 2000; opacity: 0; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+.draw-in {
+  stroke-dasharray: 2000;
+  animation: drawIn 1.6s ease-out forwards;
+}
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.float-y { animation: floatY 4s ease-in-out infinite; }
+
+/* Scrollbar */
+.scroll-ink::-webkit-scrollbar { width: 8px; }
+.scroll-ink::-webkit-scrollbar-track { background: transparent; }
+.scroll-ink::-webkit-scrollbar-thumb { background: #c9b99a; border-radius: 8px; }
