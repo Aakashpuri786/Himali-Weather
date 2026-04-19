@@ -24,6 +24,7 @@ body {
   font-family: var(--font-body);
   background: var(--color-bg);
   color: var(--color-ink);
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   background-image:
     radial-gradient(circle at 15% 10%, rgba(192, 57, 43, 0.06), transparent 40%),
@@ -33,6 +34,28 @@ body {
 
 .font-display { font-family: var(--font-display); font-variation-settings: "opsz" 96; }
 .font-mono    { font-family: var(--font-mono); }
+
+@layer components {
+  .app-shell {
+    padding-inline: 1rem;
+  }
+
+  .district-popover {
+    max-height: min(70dvh, 32rem);
+  }
+
+  .nepal-map-svg {
+    max-height: 72vh;
+  }
+
+  .panel-card {
+    min-height: 520px;
+  }
+
+  .weather-scroll {
+    overscroll-behavior: contain;
+  }
+}
 
 /* Map styling */
 .district-path {
@@ -78,3 +101,51 @@ body {
 .scroll-ink::-webkit-scrollbar { width: 8px; }
 .scroll-ink::-webkit-scrollbar-track { background: transparent; }
 .scroll-ink::-webkit-scrollbar-thumb { background: #c9b99a; border-radius: 8px; }
+
+@media (min-width: 640px) {
+  .app-shell {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .panel-card {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .map-frame {
+    padding: 0.75rem;
+  }
+
+  .map-meta {
+    gap: 0.5rem 1rem;
+  }
+
+  .map-tooltip {
+    display: none;
+  }
+
+  .nepal-map-svg {
+    max-height: 58vh;
+  }
+
+  .paper::before {
+    opacity: 0.35;
+  }
+}
+
+@media (max-width: 480px) {
+  .district-popover {
+    max-height: min(66dvh, 28rem);
+  }
+
+  .nepal-map-svg {
+    max-height: 50vh;
+  }
+
+  .scroll-ink::-webkit-scrollbar {
+    width: 6px;
+  }
+}

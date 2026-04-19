@@ -42,7 +42,7 @@ export default function DistrictSelect({ items, value, onChange }: Props) {
     <div ref={ref} className="relative w-full">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center justify-between gap-3 px-4 py-3 bg-[var(--color-bg-2)] border border-[var(--color-line)] rounded-xl hover:border-[var(--color-ink)] transition-colors"
+        className="w-full flex items-center justify-between gap-3 px-3 sm:px-4 py-3 bg-[var(--color-bg-2)] border border-[var(--color-line)] rounded-xl hover:border-[var(--color-ink)] transition-colors"
       >
         <div className="flex items-center gap-3 min-w-0">
           {current && (
@@ -55,39 +55,39 @@ export default function DistrictSelect({ items, value, onChange }: Props) {
             <div className="text-[10px] uppercase tracking-[0.2em] font-mono text-[var(--color-ink-soft)]">
               District
             </div>
-            <div className="font-display text-xl truncate">
+            <div className="font-display text-lg sm:text-xl truncate">
               {current ? current.name : "Select a district"}
             </div>
           </div>
         </div>
-        <ChevronDown className={`w-5 h-5 transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
-        <div className="absolute z-30 mt-2 w-full bg-[var(--color-bg)] border border-[var(--color-ink)] rounded-xl shadow-[0_18px_50px_-18px_rgba(26,20,16,0.4)] overflow-hidden">
+        <div className="district-popover absolute z-30 mt-2 w-full bg-[var(--color-bg)] border border-[var(--color-ink)] rounded-xl shadow-[0_18px_50px_-18px_rgba(26,20,16,0.4)] overflow-hidden">
           <div className="p-2 border-b border-[var(--color-line)] relative">
-            <Search className="w-4 h-4 absolute left-5 top-1/2 -translate-y-1/2 text-[var(--color-ink-soft)]" />
+            <Search className="w-4 h-4 absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 text-[var(--color-ink-soft)]" />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
               autoFocus
               placeholder="Search 77 districts…"
-              className="w-full pl-9 pr-8 py-2 bg-transparent outline-none font-mono text-sm"
+              className="w-full pl-8 sm:pl-9 pr-8 py-2 bg-transparent outline-none font-mono text-sm"
             />
             {q && (
-              <button onClick={() => setQ("")} className="absolute right-4 top-1/2 -translate-y-1/2">
+              <button onClick={() => setQ("")} className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2">
                 <X className="w-4 h-4 text-[var(--color-ink-soft)]" />
               </button>
             )}
           </div>
-          <div className="max-h-[360px] overflow-y-auto scroll-ink">
+          <div className="max-h-[360px] sm:max-h-[420px] overflow-y-auto scroll-ink">
             {Object.keys(grouped)
               .sort()
               .map((pcode) => {
                 const info = provinceOf(pcode);
                 return (
                   <div key={pcode}>
-                    <div className="sticky top-0 bg-[var(--color-bg-2)] px-4 py-1.5 border-b border-[var(--color-line)]/60 text-[10px] uppercase tracking-[0.2em] font-mono flex items-center gap-2">
+                    <div className="sticky top-0 bg-[var(--color-bg-2)] px-3 sm:px-4 py-1.5 border-b border-[var(--color-line)]/60 text-[10px] uppercase tracking-[0.2em] font-mono flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full" style={{ background: info.color }} />
                       Province {pcode} · {info.name}
                       <span className="ml-auto text-[var(--color-ink-soft)]">{grouped[pcode].length}</span>
@@ -100,11 +100,11 @@ export default function DistrictSelect({ items, value, onChange }: Props) {
                           setOpen(false);
                           setQ("");
                         }}
-                        className={`w-full text-left px-4 py-2 hover:bg-[var(--color-bg-2)] flex items-center justify-between ${
+                        className={`w-full text-left px-3 sm:px-4 py-2.5 sm:py-2 hover:bg-[var(--color-bg-2)] flex items-center justify-between gap-3 ${
                           value === it.name ? "bg-[var(--color-bg-2)]" : ""
                         }`}
                       >
-                        <span className="font-display text-base">{it.name}</span>
+                        <span className="font-display text-base sm:text-[1.05rem] truncate">{it.name}</span>
                         {value === it.name && (
                           <span className="text-[10px] font-mono text-[var(--color-accent)]">SELECTED</span>
                         )}

@@ -1,8 +1,18 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Droplets, Wind, Gauge, Sun, Thermometer, Cloud, Sunrise, Sunset, MapPin } from "lucide-react";
-import { describeCode, fetchWeather, type WeatherData } from "../lib/weather";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Cloud,
+  Droplets,
+  Gauge,
+  MapPin,
+  Sun,
+  Sunrise,
+  Sunset,
+  Thermometer,
+  Wind,
+} from "lucide-react";
 import { provinceOf } from "../lib/provinces";
+import { describeCode, fetchWeather, type WeatherData } from "../lib/weather";
 
 type Props = {
   districtName: string | null;
@@ -40,11 +50,12 @@ export default function WeatherPanel({ districtName, province, lon, lat }: Props
 
   if (!districtName) {
     return (
-      <div className="h-full flex flex-col items-center justify-center text-center p-8">
-        <div className="text-6xl float-y mb-4">🏔️</div>
+      <div className="h-full flex flex-col items-center justify-center text-center p-6 sm:p-8">
+        <div className="text-5xl sm:text-6xl float-y mb-4">🏔️</div>
         <h3 className="font-display text-2xl mb-2">Choose a district</h3>
         <p className="text-[var(--color-ink-soft)] max-w-xs text-sm leading-relaxed">
-          Click any district on the map, or pick one from the dropdown. You'll see live temperature, forecast, sunrise & more.
+          Click any district on the map, or pick one from the dropdown. You&apos;ll see live temperature,
+          forecast, sunrise and more.
         </p>
       </div>
     );
@@ -53,15 +64,15 @@ export default function WeatherPanel({ districtName, province, lon, lat }: Props
   const p = province ? provinceOf(province) : null;
 
   return (
-    <div className="p-6 h-full overflow-y-auto scroll-ink">
-      <div className="flex items-start gap-3 mb-5">
+    <div className="weather-scroll p-4 sm:p-6 h-full overflow-y-auto scroll-ink">
+      <div className="flex items-start gap-3 mb-4 sm:mb-5">
         <div className="w-1 self-stretch rounded-full" style={{ background: p?.color }} />
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--color-ink-soft)] font-mono">
             <MapPin className="inline w-3 h-3 mr-1 -mt-0.5" />
             Province {province} · {p?.name}
           </div>
-          <h2 className="font-display text-4xl leading-tight">{districtName}</h2>
+          <h2 className="font-display text-3xl sm:text-4xl leading-tight">{districtName}</h2>
           {lat != null && lon != null && (
             <div className="font-mono text-[10px] text-[var(--color-ink-soft)] mt-1">
               {lat.toFixed(3)}°N · {lon.toFixed(3)}°E
@@ -77,10 +88,10 @@ export default function WeatherPanel({ districtName, province, lon, lat }: Props
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="py-10 text-center text-[var(--color-ink-soft)]"
+            className="py-8 sm:py-10 text-center text-[var(--color-ink-soft)]"
           >
             <div className="inline-block w-6 h-6 border-2 border-[var(--color-ink)] border-t-transparent rounded-full animate-spin mb-3" />
-            <div className="font-mono text-xs">fetching live data…</div>
+            <div className="font-mono text-xs">fetching live data...</div>
           </motion.div>
         )}
 
@@ -101,16 +112,15 @@ export default function WeatherPanel({ districtName, province, lon, lat }: Props
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35 }}
-            className="space-y-5"
+            className="space-y-4 sm:space-y-5"
           >
-            {/* Current */}
             <div
-              className="rounded-2xl p-5 text-[var(--color-bg)] relative overflow-hidden"
+              className="rounded-2xl p-4 sm:p-5 text-[var(--color-bg)] relative overflow-hidden"
               style={{
                 background: `linear-gradient(135deg, ${p?.hover ?? "#1a1410"}, #1a1410)`,
               }}
             >
-              <div className="absolute top-0 right-0 text-[120px] leading-none opacity-20 select-none">
+              <div className="absolute top-0 right-0 text-[88px] sm:text-[120px] leading-none opacity-20 select-none">
                 {describeCode(data.current.weatherCode).emoji}
               </div>
               <div className="relative">
@@ -118,12 +128,12 @@ export default function WeatherPanel({ districtName, province, lon, lat }: Props
                   Now · {fmtTime(data.current.time)} NPT
                 </div>
                 <div className="flex items-end gap-2 mt-1">
-                  <span className="font-display text-7xl font-semibold leading-none">
+                  <span className="font-display text-6xl sm:text-7xl font-semibold leading-none">
                     {Math.round(data.current.temperature)}
                   </span>
-                  <span className="font-display text-3xl mb-1 opacity-80">°C</span>
+                  <span className="font-display text-2xl sm:text-3xl mb-1 opacity-80">°C</span>
                 </div>
-                <div className="font-display italic text-lg mt-1">
+                <div className="font-display italic text-base sm:text-lg mt-1">
                   {describeCode(data.current.weatherCode).label}
                 </div>
                 <div className="text-xs opacity-70 mt-1 font-mono">
@@ -132,30 +142,36 @@ export default function WeatherPanel({ districtName, province, lon, lat }: Props
               </div>
             </div>
 
-            {/* Stats grid */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <Stat icon={<Droplets className="w-4 h-4" />} label="Humidity" value={`${data.current.humidity}%`} />
-              <Stat icon={<Wind className="w-4 h-4" />} label="Wind" value={`${Math.round(data.current.windSpeed)} km/h`} sub={windDir(data.current.windDir)} />
+              <Stat
+                icon={<Wind className="w-4 h-4" />}
+                label="Wind"
+                value={`${Math.round(data.current.windSpeed)} km/h`}
+                sub={windDir(data.current.windDir)}
+              />
               <Stat icon={<Cloud className="w-4 h-4" />} label="Precip" value={`${data.current.precipitation} mm`} />
               <Stat icon={<Gauge className="w-4 h-4" />} label="Elevation" value={`${Math.round(data.elevation)} m`} />
               <Stat icon={<Sunrise className="w-4 h-4" />} label="Sunrise" value={fmtTime(data.daily[0].sunrise)} />
               <Stat icon={<Sunset className="w-4 h-4" />} label="Sunset" value={fmtTime(data.daily[0].sunset)} />
-              <Stat icon={<Sun className="w-4 h-4" />} label="UV max" value={data.daily[0].uv?.toFixed(1) ?? "—"} />
-              <Stat icon={<Thermometer className="w-4 h-4" />} label="Today" value={`${Math.round(data.daily[0].tMin)}° / ${Math.round(data.daily[0].tMax)}°`} />
+              <Stat icon={<Sun className="w-4 h-4" />} label="UV max" value={data.daily[0].uv?.toFixed(1) ?? "-"} />
+              <Stat
+                icon={<Thermometer className="w-4 h-4" />}
+                label="Today"
+                value={`${Math.round(data.daily[0].tMin)}° / ${Math.round(data.daily[0].tMax)}°`}
+              />
             </div>
 
-            {/* Hourly strip */}
             <div>
-              <h4 className="font-display text-lg mb-2 flex items-center gap-2">
+              <h4 className="font-display text-base sm:text-lg mb-2 flex items-center gap-2">
                 Next 24 hours
                 <span className="flex-1 h-px bg-[var(--color-line)]" />
               </h4>
               <HourlyChart hourly={data.hourly} />
             </div>
 
-            {/* 7-day forecast */}
             <div>
-              <h4 className="font-display text-lg mb-2 flex items-center gap-2">
+              <h4 className="font-display text-base sm:text-lg mb-2 flex items-center gap-2">
                 7-day outlook
                 <span className="flex-1 h-px bg-[var(--color-line)]" />
               </h4>
@@ -182,7 +198,7 @@ function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: strin
       <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-mono text-[var(--color-ink-soft)]">
         {icon} {label}
       </div>
-      <div className="font-display text-xl mt-1">{value}</div>
+      <div className="font-display text-lg sm:text-xl mt-1">{value}</div>
       {sub && <div className="text-[10px] font-mono text-[var(--color-ink-soft)]">{sub}</div>}
     </div>
   );
@@ -190,20 +206,22 @@ function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: strin
 
 function windDir(deg: number) {
   const dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
-  return dirs[Math.round(deg / 45) % 8] + " · " + Math.round(deg) + "°";
+  return `${dirs[Math.round(deg / 45) % 8]} · ${Math.round(deg)}°`;
 }
 
 function DailyRow({ d, isToday }: { d: WeatherData["daily"][number]; isToday: boolean }) {
   const meta = describeCode(d.code);
   return (
-    <div className="flex items-center gap-3 py-1.5 px-2 rounded hover:bg-[var(--color-bg-2)]">
-      <div className="w-20 font-mono text-xs">{isToday ? "Today" : fmtDay(d.date).split(",")[0]}</div>
-      <div className="text-lg w-8 text-center">{meta.emoji}</div>
-      <div className="flex-1 text-xs text-[var(--color-ink-soft)] italic truncate">{meta.label}</div>
-      <div className="font-mono text-xs w-10 text-right text-[var(--color-ink-soft)]">
+    <div className="flex flex-wrap sm:flex-nowrap items-center gap-x-3 gap-y-1.5 py-1.5 px-2 rounded hover:bg-[var(--color-bg-2)]">
+      <div className="w-16 sm:w-20 font-mono text-xs">{isToday ? "Today" : fmtDay(d.date).split(",")[0]}</div>
+      <div className="text-lg w-7 sm:w-8 text-center">{meta.emoji}</div>
+      <div className="order-4 basis-full sm:order-none sm:basis-auto flex-1 text-xs text-[var(--color-ink-soft)] italic truncate">
+        {meta.label}
+      </div>
+      <div className="ml-auto sm:ml-0 font-mono text-xs w-10 text-right text-[var(--color-ink-soft)]">
         {Math.round(d.tMin)}°
       </div>
-      <div className="w-20 h-1 bg-[var(--color-line)]/50 rounded-full relative overflow-hidden">
+      <div className="order-5 basis-full sm:order-none sm:basis-auto w-full sm:w-20 h-1 bg-[var(--color-line)]/50 rounded-full relative overflow-hidden">
         <div
           className="absolute h-full rounded-full"
           style={{
@@ -235,8 +253,8 @@ function HourlyChart({ hourly }: { hourly: WeatherData["hourly"] }) {
   const linePath = `M${pts.join(" L")}`;
 
   return (
-    <div className="bg-[var(--color-bg-2)] border border-[var(--color-line)]/60 rounded-lg p-3">
-      <svg viewBox={`0 0 ${W} ${H + 14}`} className="w-full h-28" preserveAspectRatio="none">
+    <div className="bg-[var(--color-bg-2)] border border-[var(--color-line)]/60 rounded-lg p-2.5 sm:p-3">
+      <svg viewBox={`0 0 ${W} ${H + 14}`} className="w-full h-24 sm:h-28" preserveAspectRatio="none">
         <defs>
           <linearGradient id="hg" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor="#c0392b" stopOpacity="0.6" />

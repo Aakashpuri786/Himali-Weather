@@ -51,11 +51,11 @@ export default function NepalMap({
     // Approx capital coords (lon,lat) -> projected
     const caps: Array<{ name: string; x: number; y: number; star?: boolean }> = [
       { name: "Kathmandu", x: 85.324, y: 27.7172, star: true },
-      { name: "Pokhara",    x: 83.9856, y: 28.2096 },
+      { name: "Pokhara", x: 83.9856, y: 28.2096 },
       { name: "Biratnagar", x: 87.2718, y: 26.4525 },
-      { name: "Janakpur",   x: 85.9266, y: 26.7288 },
-      { name: "Nepalgunj",  x: 81.6168, y: 28.0500 },
-      { name: "Dhangadhi",  x: 80.5899, y: 28.6862 },
+      { name: "Janakpur", x: 85.9266, y: 26.7288 },
+      { name: "Nepalgunj", x: 81.6168, y: 28.05 },
+      { name: "Dhangadhi", x: 80.5899, y: 28.6862 },
       { name: "Birendranagar", x: 81.6336, y: 28.6008 },
     ].map((c) => {
       const [x, y] = proj([c.x, c.y]);
@@ -80,8 +80,7 @@ export default function NepalMap({
     <div className="relative w-full">
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        className="w-full h-auto block"
-        style={{ maxHeight: "72vh" }}
+        className="nepal-map-svg w-full h-auto block"
       >
         {/* Decorative backdrop */}
         <defs>
@@ -115,11 +114,7 @@ export default function NepalMap({
             const info = provinceOf(p.province);
             const isSelected = selected === p.name;
             const isHover = hover?.name === p.name;
-            const fill = isSelected
-              ? "#1a1410"
-              : isHover
-              ? info.hover
-              : info.color;
+            const fill = isSelected ? "#1a1410" : isHover ? info.hover : info.color;
             return (
               <path
                 key={p.name}
@@ -215,7 +210,7 @@ export default function NepalMap({
 
       {hover && (
         <div
-          className="absolute pointer-events-none bg-[#1a1410] text-[#f4ede1] px-3 py-2 rounded shadow-lg text-sm z-10"
+          className="map-tooltip absolute pointer-events-none bg-[#1a1410] text-[#f4ede1] px-3 py-2 rounded shadow-lg text-sm z-10 max-w-[220px]"
           style={{ left: hover.x, top: hover.y }}
         >
           <div className="font-display text-base leading-tight">{hover.name}</div>
