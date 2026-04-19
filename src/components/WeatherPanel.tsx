@@ -64,7 +64,7 @@ export default function WeatherPanel({ districtName, province, lon, lat }: Props
   const p = province ? provinceOf(province) : null;
 
   return (
-    <div className="weather-scroll p-4 sm:p-6 h-full overflow-y-auto scroll-ink">
+    <div className="weather-scroll p-4 sm:p-6 scroll-ink">
       <div className="flex items-start gap-3 mb-4 sm:mb-5">
         <div className="w-1 self-stretch rounded-full" style={{ background: p?.color }} />
         <div className="flex-1 min-w-0">

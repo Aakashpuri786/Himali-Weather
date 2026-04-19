@@ -30,6 +30,7 @@ body {
     radial-gradient(circle at 15% 10%, rgba(192, 57, 43, 0.06), transparent 40%),
     radial-gradient(circle at 85% 90%, rgba(27, 67, 50, 0.07), transparent 45%),
     repeating-linear-gradient(45deg, rgba(26,20,16,0.015) 0 1px, transparent 1px 8px);
+  -webkit-overflow-scrolling: touch;
 }
 
 .font-display { font-family: var(--font-display); font-variation-settings: "opsz" 96; }
@@ -46,6 +47,7 @@ body {
 
   .nepal-map-svg {
     max-height: 72vh;
+    touch-action: pan-y;
   }
 
   .panel-card {
@@ -53,13 +55,19 @@ body {
   }
 
   .weather-scroll {
-    overscroll-behavior: contain;
+    min-height: 100%;
+  }
+
+  .scroll-ink {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
   }
 }
 
 /* Map styling */
 .district-path {
   cursor: pointer;
+  touch-action: pan-y;
   transition: fill 150ms ease, stroke-width 150ms ease, filter 200ms ease;
 }
 .district-path:hover {
