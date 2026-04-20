@@ -1,26 +1,26 @@
 export const SITE_URL = "https://himali-weather.vercel.app";
 export const SITE_NAME = "Himali Weather";
 export const DEFAULT_TITLE =
-  "Nepal Weather by District | Live Forecast for 77 Districts | Himali Weather";
+  "Himali Weather | Nepal Weather Map, District Forecasts and 7-Day Outlook";
 export const DEFAULT_DESCRIPTION =
-  "Explore live Nepal weather by district with Himali Weather. Check temperature, humidity, wind, sunrise, sunset, and a 7-day forecast for all 77 districts of Nepal.";
+  "Himali Weather is an interactive Nepal weather website with a district map, district search, live temperature, feels-like data, humidity, wind, sunrise, sunset, hourly conditions, and 7-day forecasts for all 77 districts of Nepal.";
 export const OG_IMAGE_URL = `${SITE_URL}/og-cover.svg`;
 
 export const HOME_FAQS = [
   {
-    question: "Can I check weather for different districts of Nepal?",
+    question: "Does Himali Weather cover all 77 districts of Nepal?",
     answer:
-      "Yes. Himali Weather covers all 77 districts of Nepal with a live weather panel, district map, and a 7-day forecast.",
+      "Yes. Himali Weather lets you explore weather for all 77 districts of Nepal through an interactive map, district links, and a live forecast panel.",
   },
   {
-    question: "What weather details can I see on Himali Weather?",
+    question: "What details can I check on Himali Weather?",
     answer:
-      "You can see temperature, feels-like temperature, humidity, wind speed, precipitation, sunrise, sunset, UV, and hourly plus 7-day outlook data.",
+      "Each district page shows temperature, feels-like temperature, humidity, wind, precipitation, elevation, UV, sunrise, sunset, hourly conditions, and a 7-day outlook.",
   },
   {
-    question: "Why is weather in Kathmandu different from weather in mountain districts?",
+    question: "Why do districts in Nepal have different weather on the same day?",
     answer:
-      "Nepal has major elevation and terrain changes, so weather can be very different between the Terai, hill districts, and Himalayan districts on the same day.",
+      "Nepal has big elevation and terrain differences, so conditions can change a lot between the Terai, hill districts, valleys, and high Himalayan regions.",
   },
 ] as const;
 
@@ -48,11 +48,11 @@ export function districtUrl(name: string) {
 }
 
 export function districtTitle(name: string) {
-  return `${name} Weather Forecast, Temperature and 7-Day Outlook | Himali Weather`;
+  return `${name} Weather in Nepal | Live Forecast and 7-Day Outlook | Himali Weather`;
 }
 
 export function districtDescription(name: string, province: string) {
-  return `Live weather in ${name}, ${province} Province, Nepal. Check temperature, humidity, wind, sunrise, sunset, and a 7-day forecast on Himali Weather.`;
+  return `Check ${name} weather in ${province} Province, Nepal on Himali Weather. View live temperature, feels-like conditions, humidity, wind, sunrise, sunset, hourly updates, and a 7-day forecast.`;
 }
 
 export function districtPageName(name: string) {

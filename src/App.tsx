@@ -188,12 +188,13 @@ export default function App() {
           className="mb-6 sm:mb-8"
         >
           <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.05] max-w-4xl">
-            Nepal weather forecast by district, from the <em className="text-[var(--color-accent)]">Terai</em> to the{" "}
+            Nepal weather by district, from the <em className="text-[var(--color-accent)]">Terai</em> to the{" "}
             <em className="text-[var(--color-accent-2)]">Himalayas</em>.
           </h1>
           <p className="text-sm sm:text-base text-[var(--color-ink-soft)] mt-3 max-w-3xl leading-relaxed">
-            Himali Weather helps people check Nepal weather in every district. Explore live temperature,
-            humidity, wind, sunrise, sunset, and a 7-day outlook for all 77 districts of Nepal, including
+            Himali Weather is a Nepal weather website built around an interactive district map. Search or
+            click any district to check live temperature, feels-like conditions, humidity, wind, sunrise,
+            sunset, hourly updates, and a 7-day forecast for all 77 districts of Nepal, including
             Kathmandu, Bhaktapur, Lalitpur, Kaski, Chitwan, Jhapa, Kailali, and more.
           </p>
           {featuredDistricts.length > 0 && (
@@ -276,10 +277,10 @@ export default function App() {
               Weather in {current.name}, {currentProvince.name} Province
             </h2>
             <p className="mt-3 text-sm sm:text-base text-[var(--color-ink-soft)] max-w-4xl leading-relaxed">
-              Follow live weather in {current.name}, Nepal with current temperature, humidity, wind,
-              sunrise, sunset, and a full 7-day forecast. Compare {current.name} with nearby districts
-              across {currentProvince.name} Province or explore conditions anywhere else in Nepal from the
-              district list below.
+              Check live weather in {current.name}, Nepal with current temperature, feels-like conditions,
+              humidity, wind, sunrise, sunset, hourly updates, and a full 7-day forecast. You can also
+              compare {current.name} with other districts in {currentProvince.name} Province or across Nepal
+              from the district list below.
             </p>
           </section>
         )}
@@ -289,9 +290,9 @@ export default function App() {
             Weather forecast for all 77 districts of Nepal
           </h2>
           <p className="mt-3 text-sm sm:text-base text-[var(--color-ink-soft)] max-w-4xl leading-relaxed">
-            These district pages are organized by province so people can quickly find local weather across Nepal.
-            Use the links below for districts such as Kathmandu, Lalitpur, Bhaktapur, Kaski, Jhapa, Kailali,
-            Surkhet, Mustang, and every other district in the country.
+            These district pages are organized by province so visitors can quickly find local weather anywhere
+            in Nepal. Use the links below to open district weather pages for Kathmandu, Lalitpur, Bhaktapur,
+            Kaski, Jhapa, Kailali, Surkhet, Mustang, and every other district in the country.
           </p>
 
           <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">

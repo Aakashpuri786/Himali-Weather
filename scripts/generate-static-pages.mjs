@@ -3,9 +3,9 @@ import path from "node:path";
 
 const siteUrl = "https://himali-weather.vercel.app";
 const siteName = "Himali Weather";
-const defaultTitle = "Nepal Weather by District | Live Forecast for 77 Districts | Himali Weather";
+const defaultTitle = "Himali Weather | Nepal Weather Map, District Forecasts and 7-Day Outlook";
 const defaultDescription =
-  "Explore live Nepal weather by district with Himali Weather. Check temperature, humidity, wind, sunrise, sunset, and a 7-day forecast for all 77 districts of Nepal.";
+  "Himali Weather is an interactive Nepal weather website with a district map, district search, live temperature, feels-like data, humidity, wind, sunrise, sunset, hourly conditions, and 7-day forecasts for all 77 districts of Nepal.";
 const provinceNames = {
   "1": "Koshi",
   "2": "Madhesh",
@@ -17,19 +17,19 @@ const provinceNames = {
 };
 const homeFaqs = [
   {
-    question: "Can I check weather for different districts of Nepal?",
+    question: "Does Himali Weather cover all 77 districts of Nepal?",
     answer:
-      "Yes. Himali Weather covers all 77 districts of Nepal with a live weather panel, district map, and a 7-day forecast.",
+      "Yes. Himali Weather lets you explore weather for all 77 districts of Nepal through an interactive map, district links, and a live forecast panel.",
   },
   {
-    question: "What weather details can I see on Himali Weather?",
+    question: "What details can I check on Himali Weather?",
     answer:
-      "You can see temperature, feels-like temperature, humidity, wind speed, precipitation, sunrise, sunset, UV, and hourly plus 7-day outlook data.",
+      "Each district page shows temperature, feels-like temperature, humidity, wind, precipitation, elevation, UV, sunrise, sunset, hourly conditions, and a 7-day outlook.",
   },
   {
-    question: "Why is weather in Kathmandu different from weather in mountain districts?",
+    question: "Why do districts in Nepal have different weather on the same day?",
     answer:
-      "Nepal has major elevation and terrain changes, so weather can be very different between the Terai, hill districts, and Himalayan districts on the same day.",
+      "Nepal has big elevation and terrain differences, so conditions can change a lot between the Terai, hill districts, valleys, and high Himalayan regions.",
   },
 ];
 
@@ -62,11 +62,11 @@ function safeJson(value) {
 }
 
 function districtTitle(name) {
-  return `${name} Weather Forecast, Temperature and 7-Day Outlook | Himali Weather`;
+  return `${name} Weather in Nepal | Live Forecast and 7-Day Outlook | Himali Weather`;
 }
 
 function districtDescription(name, province) {
-  return `Live weather in ${name}, ${province} Province, Nepal. Check temperature, humidity, wind, sunrise, sunset, and a 7-day forecast on Himali Weather.`;
+  return `Check ${name} weather in ${province} Province, Nepal on Himali Weather. View live temperature, feels-like conditions, humidity, wind, sunrise, sunset, hourly updates, and a 7-day forecast.`;
 }
 
 function renderPage(template, page) {
@@ -197,13 +197,13 @@ const districtRows = [...new Map(
   ]),
 ).values()].sort((a, b) => a.name.localeCompare(b.name));
 
-const homePage = renderPage(template, {
+  const homePage = renderPage(template, {
   title: defaultTitle,
   description: defaultDescription,
   canonical: `${siteUrl}/`,
   schema: homeSchema(),
   noscript:
-    "Browse Nepal weather by district on Himali Weather. Enable JavaScript to load the interactive map, live weather data, and 7-day forecast widgets.",
+    "Browse district weather across Nepal on Himali Weather. Enable JavaScript to use the interactive map, district search, live weather panel, and 7-day forecast view.",
 });
 fs.writeFileSync(distIndexPath, homePage, "utf8");
 
@@ -216,7 +216,7 @@ for (const district of districtRows) {
     description: districtDescription(district.name, province),
     canonical,
     schema: districtSchema(district.name, province, canonical),
-    noscript: `Check live weather in ${district.name}, ${province} Province, Nepal on Himali Weather. Enable JavaScript to load the interactive district map and forecast widgets.`,
+    noscript: `Check ${district.name} weather in ${province} Province, Nepal on Himali Weather. Enable JavaScript to use the interactive district map, live weather panel, and forecast widgets.`,
   });
 
   const districtDir = path.join(distDir, "district", slug);

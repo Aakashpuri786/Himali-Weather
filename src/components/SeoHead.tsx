@@ -74,7 +74,7 @@ export default function SeoHead({ district }: Props) {
     upsertMeta(
       'meta[property="og:image:alt"]',
       { property: "og:image:alt" },
-      "Himali Weather map-style preview for Nepal district forecasts",
+      "Himali Weather preview showing Nepal district weather forecasts",
     );
     upsertMeta('meta[name="twitter:card"]', { name: "twitter:card" }, "summary_large_image");
     upsertMeta('meta[name="twitter:title"]', { name: "twitter:title" }, title);
