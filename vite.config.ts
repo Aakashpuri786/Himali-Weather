@@ -6,7 +6,8 @@ import { defineConfig, type PluginOption } from "vite";
 export default defineConfig(async () => {
   const plugins: PluginOption[] = [react(), tailwindcss()];
   try {
-    const module = (await import("./.vite-source-tags.js")) as { sourceTags?: () => PluginOption };
+    const sourceTagsModulePath = new URL("./.vite-source-tags.js", import.meta.url).href;
+    const module = (await import(sourceTagsModulePath)) as { sourceTags?: () => PluginOption };
     if (typeof module.sourceTags === "function") {
       plugins.push(module.sourceTags());
     }

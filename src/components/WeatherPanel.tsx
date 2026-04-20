@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Cloud,
@@ -35,17 +35,17 @@ export default function WeatherPanel({ districtName, province, lon, lat }: Props
 
   useEffect(() => {
     if (lat == null || lon == null) return;
+
     let cancel = false;
-    queueMicrotask(() => {
-      if (cancel) return;
-      setLoading(true);
-      setError(null);
-      setData(null);
-    });
+    setLoading(true);
+    setError(null);
+    setData(null);
+
     fetchWeather(lat, lon)
-      .then((d) => !cancel && setData(d))
-      .catch((e) => !cancel && setError(String(e?.message ?? e)))
+      .then((weather) => !cancel && setData(weather))
+      .catch((err) => !cancel && setError(String(err?.message ?? err)))
       .finally(() => !cancel && setLoading(false));
+
     return () => {
       cancel = true;
     };
@@ -58,22 +58,22 @@ export default function WeatherPanel({ districtName, province, lon, lat }: Props
         <h3 className="font-display text-2xl mb-2">Choose a district</h3>
         <p className="text-[var(--color-ink-soft)] max-w-xs text-sm leading-relaxed">
           Click any district on the map, or pick one from the dropdown. You&apos;ll see live temperature,
-          forecast, sunrise and more.
+          forecast, sunrise, and more.
         </p>
       </div>
     );
   }
 
-  const p = province ? provinceOf(province) : null;
+  const provinceInfo = province ? provinceOf(province) : null;
 
   return (
     <div className="weather-scroll p-4 sm:p-6 scroll-ink">
       <div className="flex items-start gap-3 mb-4 sm:mb-5">
-        <div className="w-1 self-stretch rounded-full" style={{ background: p?.color }} />
+        <div className="w-1 self-stretch rounded-full" style={{ background: provinceInfo?.color }} />
         <div className="flex-1 min-w-0">
           <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--color-ink-soft)] font-mono">
             <MapPin className="inline w-3 h-3 mr-1 -mt-0.5" />
-            Province {province} · {p?.name}
+            Province {province} · {provinceInfo?.name}
           </div>
           <h2 className="font-display text-3xl sm:text-4xl leading-tight">{districtName}</h2>
           {lat != null && lon != null && (
@@ -120,7 +120,7 @@ export default function WeatherPanel({ districtName, province, lon, lat }: Props
             <div
               className="rounded-2xl p-4 sm:p-5 text-[var(--color-bg)] relative overflow-hidden"
               style={{
-                background: `linear-gradient(135deg, ${p?.hover ?? "#1a1410"}, #1a1410)`,
+                background: `linear-gradient(135deg, ${provinceInfo?.hover ?? "#1a1410"}, #1a1410)`,
               }}
             >
               <div className="absolute top-0 right-0 text-[88px] sm:text-[120px] leading-none opacity-20 select-none">
@@ -179,8 +179,8 @@ export default function WeatherPanel({ districtName, province, lon, lat }: Props
                 <span className="flex-1 h-px bg-[var(--color-line)]" />
               </h4>
               <div className="space-y-1.5">
-                {data.daily.map((d, i) => (
-                  <DailyRow key={d.date} d={d} isToday={i === 0} />
+                {data.daily.map((day, index) => (
+                  <DailyRow key={day.date} day={day} isToday={index === 0} />
                 ))}
               </div>
             </div>
@@ -195,7 +195,17 @@ export default function WeatherPanel({ districtName, province, lon, lat }: Props
   );
 }
 
-function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub?: string }) {
+function Stat({
+  icon,
+  label,
+  value,
+  sub,
+}: {
+  icon: ReactNode;
+  label: string;
+  value: string;
+  sub?: string;
+}) {
   return (
     <div className="bg-[var(--color-bg-2)] border border-[var(--color-line)]/60 rounded-lg p-3">
       <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-mono text-[var(--color-ink-soft)]">
@@ -208,56 +218,58 @@ function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: strin
 }
 
 function windDir(deg: number) {
-  const dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
-  return `${dirs[Math.round(deg / 45) % 8]} · ${Math.round(deg)}°`;
+  const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+  return `${directions[Math.round(deg / 45) % 8]} · ${Math.round(deg)}°`;
 }
 
-function DailyRow({ d, isToday }: { d: WeatherData["daily"][number]; isToday: boolean }) {
-  const meta = describeCode(d.code);
+function DailyRow({ day, isToday }: { day: WeatherData["daily"][number]; isToday: boolean }) {
+  const meta = describeCode(day.code);
+
   return (
     <div className="flex flex-wrap sm:flex-nowrap items-center gap-x-3 gap-y-1.5 py-1.5 px-2 rounded hover:bg-[var(--color-bg-2)]">
-      <div className="w-16 sm:w-20 font-mono text-xs">{isToday ? "Today" : fmtDay(d.date).split(",")[0]}</div>
+      <div className="w-16 sm:w-20 font-mono text-xs">{isToday ? "Today" : fmtDay(day.date).split(",")[0]}</div>
       <div className="text-lg w-7 sm:w-8 text-center">{meta.emoji}</div>
       <div className="order-4 basis-full sm:order-none sm:basis-auto flex-1 text-xs text-[var(--color-ink-soft)] italic truncate">
         {meta.label}
       </div>
       <div className="ml-auto sm:ml-0 font-mono text-xs w-10 text-right text-[var(--color-ink-soft)]">
-        {Math.round(d.tMin)}°
+        {Math.round(day.tMin)}°
       </div>
       <div className="order-5 basis-full sm:order-none sm:basis-auto w-full sm:w-20 h-1 bg-[var(--color-line)]/50 rounded-full relative overflow-hidden">
         <div
           className="absolute h-full rounded-full"
           style={{
             background: "linear-gradient(90deg, #6f9ab8, #f2cc8f, #c0392b)",
-            left: `${Math.max(0, ((d.tMin + 10) / 50) * 100)}%`,
-            right: `${Math.max(0, 100 - ((d.tMax + 10) / 50) * 100)}%`,
+            left: `${Math.max(0, ((day.tMin + 10) / 50) * 100)}%`,
+            right: `${Math.max(0, 100 - ((day.tMax + 10) / 50) * 100)}%`,
           }}
         />
       </div>
-      <div className="font-mono text-xs w-10 font-semibold">{Math.round(d.tMax)}°</div>
+      <div className="font-mono text-xs w-10 font-semibold">{Math.round(day.tMax)}°</div>
     </div>
   );
 }
 
 function HourlyChart({ hourly }: { hourly: WeatherData["hourly"] }) {
   if (!hourly.length) return null;
-  const temps = hourly.map((h) => h.t);
-  const min = Math.min(...temps);
-  const max = Math.max(...temps);
+
+  const temperatures = hourly.map((hour) => hour.t);
+  const min = Math.min(...temperatures);
+  const max = Math.max(...temperatures);
   const range = Math.max(1, max - min);
-  const W = 100;
-  const H = 40;
-  const pts = hourly.map((h, i) => {
-    const x = (i / (hourly.length - 1)) * W;
-    const y = H - ((h.t - min) / range) * H;
+  const width = 100;
+  const height = 40;
+  const points = hourly.map((hour, index) => {
+    const x = (index / (hourly.length - 1)) * width;
+    const y = height - ((hour.t - min) / range) * height;
     return `${x},${y}`;
   });
-  const areaPath = `M0,${H} L${pts.join(" L")} L${W},${H} Z`;
-  const linePath = `M${pts.join(" L")}`;
+  const areaPath = `M0,${height} L${points.join(" L")} L${width},${height} Z`;
+  const linePath = `M${points.join(" L")}`;
 
   return (
     <div className="bg-[var(--color-bg-2)] border border-[var(--color-line)]/60 rounded-lg p-2.5 sm:p-3">
-      <svg viewBox={`0 0 ${W} ${H + 14}`} className="w-full h-24 sm:h-28" preserveAspectRatio="none">
+      <svg viewBox={`0 0 ${width} ${height + 14}`} className="w-full h-24 sm:h-28" preserveAspectRatio="none">
         <defs>
           <linearGradient id="hg" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor="#c0392b" stopOpacity="0.6" />
@@ -266,18 +278,18 @@ function HourlyChart({ hourly }: { hourly: WeatherData["hourly"] }) {
         </defs>
         <path d={areaPath} fill="url(#hg)" />
         <path d={linePath} fill="none" stroke="#1a1410" strokeWidth="0.6" vectorEffect="non-scaling-stroke" />
-        {hourly.map((h, i) => {
-          if (i % 4 !== 0) return null;
-          const x = (i / (hourly.length - 1)) * W;
-          const y = H - ((h.t - min) / range) * H;
+        {hourly.map((hour, index) => {
+          if (index % 4 !== 0) return null;
+          const x = (index / (hourly.length - 1)) * width;
+          const y = height - ((hour.t - min) / range) * height;
           return (
-            <g key={i}>
+            <g key={hour.time}>
               <circle cx={x} cy={y} r="0.8" fill="#1a1410" />
               <text x={x} y={y - 2} textAnchor="middle" fontSize="3" fill="#1a1410" className="font-mono">
-                {Math.round(h.t)}°
+                {Math.round(hour.t)}°
               </text>
-              <text x={x} y={H + 10} textAnchor="middle" fontSize="3" fill="#544637" className="font-mono">
-                {fmtHour(h.time)}
+              <text x={x} y={height + 10} textAnchor="middle" fontSize="3" fill="#544637" className="font-mono">
+                {fmtHour(hour.time)}
               </text>
             </g>
           );

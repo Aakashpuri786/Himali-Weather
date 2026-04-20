@@ -2,6 +2,11 @@ import { useEffect } from "react";
 import {
   DEFAULT_DESCRIPTION,
   DEFAULT_TITLE,
+  districtDescription,
+  districtPageName,
+  districtTitle,
+  HOME_FAQS,
+  OG_IMAGE_URL,
   SITE_NAME,
   SITE_URL,
   districtUrl,
@@ -46,14 +51,10 @@ function upsertJsonLd(id: string, data: Record<string, unknown>) {
 
 export default function SeoHead({ district }: Props) {
   useEffect(() => {
-    const title = district
-      ? `${district.name} Weather Forecast, Temperature and 7-Day Outlook | Himali Weather`
-      : DEFAULT_TITLE;
-    const description = district
-      ? `Live weather in ${district.name}, ${district.province} Province, Nepal. Check temperature, humidity, wind, sunrise, sunset, and a 7-day forecast on Himali Weather.`
-      : DEFAULT_DESCRIPTION;
+    const title = district ? districtTitle(district.name) : DEFAULT_TITLE;
+    const description = district ? districtDescription(district.name, district.province) : DEFAULT_DESCRIPTION;
     const canonical = district ? districtUrl(district.name) : `${SITE_URL}/`;
-    const pageName = district ? `${district.name} weather forecast` : "Nepal district weather forecast";
+    const pageName = district ? districtPageName(district.name) : "Nepal district weather forecast";
 
     document.title = title;
     document.documentElement.lang = "en";
@@ -69,14 +70,19 @@ export default function SeoHead({ district }: Props) {
     upsertMeta('meta[property="og:description"]', { property: "og:description" }, description);
     upsertMeta('meta[property="og:url"]', { property: "og:url" }, canonical);
     upsertMeta('meta[property="og:site_name"]', { property: "og:site_name" }, SITE_NAME);
-    upsertMeta('meta[property="og:image"]', { property: "og:image" }, `${SITE_URL}/og-cover.svg`);
+    upsertMeta('meta[property="og:image"]', { property: "og:image" }, OG_IMAGE_URL);
+    upsertMeta(
+      'meta[property="og:image:alt"]',
+      { property: "og:image:alt" },
+      "Himali Weather map-style preview for Nepal district forecasts",
+    );
     upsertMeta('meta[name="twitter:card"]', { name: "twitter:card" }, "summary_large_image");
     upsertMeta('meta[name="twitter:title"]', { name: "twitter:title" }, title);
     upsertMeta('meta[name="twitter:description"]', { name: "twitter:description" }, description);
-    upsertMeta('meta[name="twitter:image"]', { name: "twitter:image" }, `${SITE_URL}/og-cover.svg`);
+    upsertMeta('meta[name="twitter:image"]', { name: "twitter:image" }, OG_IMAGE_URL);
     upsertLink('link[rel="canonical"]', { rel: "canonical", href: canonical });
 
-    upsertJsonLd("website", {
+    upsertJsonLd("structured-data", {
       "@context": "https://schema.org",
       "@graph": [
         {
@@ -118,6 +124,39 @@ export default function SeoHead({ district }: Props) {
                 name: "Nepal",
               },
         },
+        ...(district
+          ? [
+              {
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Nepal weather",
+                    item: `${SITE_URL}/`,
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: `${district.name} weather`,
+                    item: canonical,
+                  },
+                ],
+              },
+            ]
+          : [
+              {
+                "@type": "FAQPage",
+                mainEntity: HOME_FAQS.map((item) => ({
+                  "@type": "Question",
+                  name: item.question,
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: item.answer,
+                  },
+                })),
+              },
+            ]),
       ],
     });
   }, [district]);
