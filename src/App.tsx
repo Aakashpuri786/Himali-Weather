@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import { motion } from "framer-motion";
 import { Compass, Mountain } from "lucide-react";
+import { Analytics } from "@vercel/analytics/react";
 import DistrictSelect from "./components/DistrictSelect";
 import NepalMap from "./components/NepalMap";
 import SeoHead from "./components/SeoHead";
@@ -383,6 +384,8 @@ export default function App() {
           <span>Built for Nepal&apos;s 77 districts</span>
         </footer>
       </main>
+
+      <Analytics />
     </div>
   );
 }
