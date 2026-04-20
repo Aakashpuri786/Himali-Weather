@@ -7,7 +7,7 @@ import SeoHead from "./components/SeoHead";
 import WeatherPanel from "./components/WeatherPanel";
 import { featureCentroid, type FC } from "./lib/geo";
 import { PROVINCES, provinceOf } from "./lib/provinces";
-import { districtPath, matchDistrictFromPath } from "./lib/site";
+import { districtPath, HOME_FAQS, matchDistrictFromPath } from "./lib/site";
 
 type DistrictIndex = {
   name: string;
@@ -45,6 +45,7 @@ export default function App() {
 
   const index: DistrictIndex[] = useMemo(() => {
     if (!districts) return [];
+
     return districts.features
       .map((feature) => {
         const [lon, lat] = featureCentroid(feature);
@@ -71,6 +72,7 @@ export default function App() {
   }, [districtItems, pathname]);
 
   const current = selected ? index.find((district) => district.name === selected) ?? null : null;
+  const currentProvince = current ? provinceOf(current.province) : null;
 
   const districtsByProvince = useMemo(
     () =>
@@ -150,7 +152,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen overflow-x-clip">
-      <SeoHead district={current ? { name: current.name, province: provinceOf(current.province).name } : null} />
+      <SeoHead district={current && currentProvince ? { name: current.name, province: currentProvince.name } : null} />
 
       <header className="border-b border-[var(--color-line)]">
         <div className="app-shell max-w-[1400px] mx-auto py-4 sm:py-5 flex items-start sm:items-center justify-between flex-wrap gap-3 sm:gap-4">
@@ -186,12 +188,13 @@ export default function App() {
           className="mb-6 sm:mb-8"
         >
           <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.05] max-w-4xl">
-            Nepal weather forecast by district, from the <em className="text-[var(--color-accent)]">Terai</em> to the{" "}
+            Nepal weather by district, from the <em className="text-[var(--color-accent)]">Terai</em> to the{" "}
             <em className="text-[var(--color-accent-2)]">Himalayas</em>.
           </h1>
           <p className="text-sm sm:text-base text-[var(--color-ink-soft)] mt-3 max-w-3xl leading-relaxed">
-            Himali Weather helps people check Nepal weather in every district. Explore live temperature,
-            humidity, wind, sunrise, sunset, and a 7-day outlook for all 77 districts of Nepal, including
+            Himali Weather is a Nepal weather website built around an interactive district map. Search or
+            click any district to check live temperature, feels-like conditions, humidity, wind, sunrise,
+            sunset, hourly updates, and a 7-day forecast for all 77 districts of Nepal, including
             Kathmandu, Bhaktapur, Lalitpur, Kaski, Chitwan, Jhapa, Kailali, and more.
           </p>
           {featuredDistricts.length > 0 && (
@@ -268,14 +271,28 @@ export default function App() {
           </div>
         </section>
 
+        {current && currentProvince && (
+          <section className="mt-10 sm:mt-12 bg-[var(--color-bg-2)] border border-[var(--color-line)] rounded-2xl p-5 sm:p-6">
+            <h2 className="font-display text-2xl sm:text-3xl leading-tight">
+              Weather in {current.name}, {currentProvince.name} Province
+            </h2>
+            <p className="mt-3 text-sm sm:text-base text-[var(--color-ink-soft)] max-w-4xl leading-relaxed">
+              Check live weather in {current.name}, Nepal with current temperature, feels-like conditions,
+              humidity, wind, sunrise, sunset, hourly updates, and a full 7-day forecast. You can also
+              compare {current.name} with other districts in {currentProvince.name} Province or across Nepal
+              from the district list below.
+            </p>
+          </section>
+        )}
+
         <section className="mt-10 sm:mt-12 bg-[var(--color-bg-2)] border border-[var(--color-line)] rounded-2xl p-5 sm:p-6">
           <h2 className="font-display text-2xl sm:text-3xl leading-tight">
             Weather forecast for all 77 districts of Nepal
           </h2>
           <p className="mt-3 text-sm sm:text-base text-[var(--color-ink-soft)] max-w-4xl leading-relaxed">
-            These district pages are organized by province so people can quickly find local weather across Nepal.
-            Use the links below for districts such as Kathmandu, Lalitpur, Bhaktapur, Kaski, Jhapa, Kailali,
-            Surkhet, Mustang, and every other district in the country.
+            These district pages are organized by province so visitors can quickly find local weather anywhere
+            in Nepal. Use the links below to open district weather pages for Kathmandu, Lalitpur, Bhaktapur,
+            Kaski, Jhapa, Kailali, Surkhet, Mustang, and every other district in the country.
           </p>
 
           <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -347,30 +364,16 @@ export default function App() {
             Questions people ask about Nepal weather
           </h2>
           <div className="mt-5 space-y-3">
-            <details className="rounded-2xl border border-[var(--color-line)] bg-[var(--color-bg-2)] p-4" open>
-              <summary className="font-display text-lg cursor-pointer">
-                Can I check weather for different districts of Nepal?
-              </summary>
-              <p className="mt-2 text-sm text-[var(--color-ink-soft)] leading-relaxed">
-                Yes. Himali Weather covers all 77 districts of Nepal with a live weather panel, district map, and a 7-day forecast.
-              </p>
-            </details>
-            <details className="rounded-2xl border border-[var(--color-line)] bg-[var(--color-bg-2)] p-4">
-              <summary className="font-display text-lg cursor-pointer">
-                What weather details can I see on Himali Weather?
-              </summary>
-              <p className="mt-2 text-sm text-[var(--color-ink-soft)] leading-relaxed">
-                You can see temperature, feels-like temperature, humidity, wind speed, precipitation, sunrise, sunset, UV, and hourly plus 7-day outlook data.
-              </p>
-            </details>
-            <details className="rounded-2xl border border-[var(--color-line)] bg-[var(--color-bg-2)] p-4">
-              <summary className="font-display text-lg cursor-pointer">
-                Why is weather in Kathmandu different from weather in mountain districts?
-              </summary>
-              <p className="mt-2 text-sm text-[var(--color-ink-soft)] leading-relaxed">
-                Nepal has major elevation and terrain changes, so weather can be very different between the Terai, hill districts, and Himalayan districts on the same day.
-              </p>
-            </details>
+            {HOME_FAQS.map((item, index) => (
+              <details
+                key={item.question}
+                className="rounded-2xl border border-[var(--color-line)] bg-[var(--color-bg-2)] p-4"
+                open={index === 0}
+              >
+                <summary className="font-display text-lg cursor-pointer">{item.question}</summary>
+                <p className="mt-2 text-sm text-[var(--color-ink-soft)] leading-relaxed">{item.answer}</p>
+              </details>
+            ))}
           </div>
         </section>
 

@@ -54,64 +54,71 @@ export const WEATHER_CODE: Record<number, { label: string; emoji: string }> = {
   99: { label: "Severe thunderstorm", emoji: "⛈️" },
 };
 
-export const describeCode = (c: number) =>
-  WEATHER_CODE[c] ?? { label: "Unknown", emoji: "🌡️" };
+export const describeCode = (code: number) =>
+  WEATHER_CODE[code] ?? { label: "Unknown", emoji: "🌡️" };
 
 export async function fetchWeather(lat: number, lon: number): Promise<WeatherData> {
   const params = new URLSearchParams({
     latitude: lat.toFixed(4),
     longitude: lon.toFixed(4),
-    current: "temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,wind_direction_10m,is_day",
+    current:
+      "temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,wind_direction_10m,is_day",
     hourly: "temperature_2m,weather_code,precipitation",
-    daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,sunrise,sunset,uv_index_max",
+    daily:
+      "weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,sunrise,sunset,uv_index_max",
     timezone: "Asia/Kathmandu",
     forecast_days: "7",
   });
-  const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
-  if (!res.ok) throw new Error("Weather fetch failed");
-  const j = await res.json();
+
+  const response = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
+  if (!response.ok) throw new Error("Weather fetch failed");
+  const weatherJson = await response.json();
 
   const hourly: WeatherData["hourly"] = [];
   const now = Date.now();
-  const times: string[] = j.hourly?.time ?? [];
-  for (let i = 0; i < times.length; i++) {
-    const t = new Date(times[i]).getTime();
-    if (t < now - 60 * 60 * 1000) continue;
+  const times: string[] = weatherJson.hourly?.time ?? [];
+  for (let index = 0; index < times.length; index += 1) {
+    const time = new Date(times[index]).getTime();
+    if (time < now - 60 * 60 * 1000) continue;
+
     hourly.push({
-      time: times[i],
-      t: j.hourly.temperature_2m[i],
-      code: j.hourly.weather_code[i],
-      precip: j.hourly.precipitation[i] ?? 0,
+      time: times[index],
+      t: weatherJson.hourly.temperature_2m[index],
+      code: weatherJson.hourly.weather_code[index],
+      precip: weatherJson.hourly.precipitation[index] ?? 0,
     });
+
     if (hourly.length >= 24) break;
   }
 
-  const daily: WeatherData["daily"] = (j.daily?.time ?? []).map((d: string, i: number) => ({
-    date: d,
-    tMax: j.daily.temperature_2m_max[i],
-    tMin: j.daily.temperature_2m_min[i],
-    code: j.daily.weather_code[i],
-    precipSum: j.daily.precipitation_sum[i],
-    sunrise: j.daily.sunrise[i],
-    sunset: j.daily.sunset[i],
-    uv: j.daily.uv_index_max[i],
-  }));
+  const daily: WeatherData["daily"] = (weatherJson.daily?.time ?? []).map(
+    (day: string, index: number) => ({
+      date: day,
+      tMax: weatherJson.daily.temperature_2m_max[index],
+      tMin: weatherJson.daily.temperature_2m_min[index],
+      code: weatherJson.daily.weather_code[index],
+      precipSum: weatherJson.daily.precipitation_sum[index],
+      sunrise: weatherJson.daily.sunrise[index],
+      sunset: weatherJson.daily.sunset[index],
+      uv: weatherJson.daily.uv_index_max[index],
+    }),
+  );
 
   return {
     current: {
-      temperature: j.current.temperature_2m,
-      apparent: j.current.apparent_temperature,
-      humidity: j.current.relative_humidity_2m,
-      windSpeed: j.current.wind_speed_10m,
-      windDir: j.current.wind_direction_10m,
-      precipitation: j.current.precipitation,
-      weatherCode: j.current.weather_code,
-      isDay: j.current.is_day,
-      time: j.current.time,
+      temperature: weatherJson.current.temperature_2m,
+      apparent: weatherJson.current.apparent_temperature,
+      humidity: weatherJson.current.relative_humidity_2m,
+      windSpeed: weatherJson.current.wind_speed_10m,
+      windDir: weatherJson.current.wind_direction_10m,
+      precipitation: weatherJson.current.precipitation,
+      weatherCode: weatherJson.current.weather_code,
+      isDay: weatherJson.current.is_day,
+      time: weatherJson.current.time,
     },
     daily,
     hourly,
-    timezone: j.timezone,
-    elevation: j.elevation,
+    timezone: weatherJson.timezone,
+    elevation: weatherJson.elevation,
   };
 }

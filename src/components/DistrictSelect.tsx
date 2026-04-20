@@ -16,32 +16,36 @@ export default function DistrictSelect({ items, value, onChange }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onDoc = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    const onDoc = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) setOpen(false);
     };
+
     document.addEventListener("mousedown", onDoc);
     return () => document.removeEventListener("mousedown", onDoc);
   }, []);
 
   const grouped = useMemo(() => {
     const filter = q.trim().toLowerCase();
-    const filtered = filter
-      ? items.filter((i) => i.name.toLowerCase().includes(filter))
-      : items;
-    const g: Record<string, Item[]> = {};
-    for (const it of filtered) {
-      (g[it.province] ??= []).push(it);
+    const filtered = filter ? items.filter((item) => item.name.toLowerCase().includes(filter)) : items;
+    const groups: Record<string, Item[]> = {};
+
+    for (const item of filtered) {
+      (groups[item.province] ??= []).push(item);
     }
-    for (const k of Object.keys(g)) g[k].sort((a, b) => a.name.localeCompare(b.name));
-    return g;
+
+    for (const provinceCode of Object.keys(groups)) {
+      groups[provinceCode].sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return groups;
   }, [items, q]);
 
-  const current = value ? items.find((i) => i.name === value) : null;
+  const current = value ? items.find((item) => item.name === value) : null;
 
   return (
     <div ref={ref} className="relative w-full">
       <button
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => setOpen((prev) => !prev)}
         className="w-full flex items-center justify-between gap-3 px-3 sm:px-4 py-3 bg-[var(--color-bg-2)] border border-[var(--color-line)] rounded-xl hover:border-[var(--color-ink)] transition-colors"
       >
         <div className="flex items-center gap-3 min-w-0">
@@ -60,7 +64,9 @@ export default function DistrictSelect({ items, value, onChange }: Props) {
             </div>
           </div>
         </div>
-        <ChevronDown className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+        />
       </button>
 
       {open && (
@@ -69,9 +75,9 @@ export default function DistrictSelect({ items, value, onChange }: Props) {
             <Search className="w-4 h-4 absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 text-[var(--color-ink-soft)]" />
             <input
               value={q}
-              onChange={(e) => setQ(e.target.value)}
+              onChange={(event) => setQ(event.target.value)}
               autoFocus
-              placeholder="Search 77 districts…"
+              placeholder="Search 77 districts..."
               className="w-full pl-8 sm:pl-9 pr-8 py-2 bg-transparent outline-none font-mono text-sm"
             />
             {q && (
@@ -83,29 +89,29 @@ export default function DistrictSelect({ items, value, onChange }: Props) {
           <div className="max-h-[360px] sm:max-h-[420px] overflow-y-auto scroll-ink">
             {Object.keys(grouped)
               .sort()
-              .map((pcode) => {
-                const info = provinceOf(pcode);
+              .map((provinceCode) => {
+                const info = provinceOf(provinceCode);
                 return (
-                  <div key={pcode}>
+                  <div key={provinceCode}>
                     <div className="sticky top-0 bg-[var(--color-bg-2)] px-3 sm:px-4 py-1.5 border-b border-[var(--color-line)]/60 text-[10px] uppercase tracking-[0.2em] font-mono flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full" style={{ background: info.color }} />
-                      Province {pcode} · {info.name}
-                      <span className="ml-auto text-[var(--color-ink-soft)]">{grouped[pcode].length}</span>
+                      Province {provinceCode} · {info.name}
+                      <span className="ml-auto text-[var(--color-ink-soft)]">{grouped[provinceCode].length}</span>
                     </div>
-                    {grouped[pcode].map((it) => (
+                    {grouped[provinceCode].map((item) => (
                       <button
-                        key={it.name}
+                        key={item.name}
                         onClick={() => {
-                          onChange(it.name);
+                          onChange(item.name);
                           setOpen(false);
                           setQ("");
                         }}
                         className={`w-full text-left px-3 sm:px-4 py-2.5 sm:py-2 hover:bg-[var(--color-bg-2)] flex items-center justify-between gap-3 ${
-                          value === it.name ? "bg-[var(--color-bg-2)]" : ""
+                          value === item.name ? "bg-[var(--color-bg-2)]" : ""
                         }`}
                       >
-                        <span className="font-display text-base sm:text-[1.05rem] truncate">{it.name}</span>
-                        {value === it.name && (
+                        <span className="font-display text-base sm:text-[1.05rem] truncate">{item.name}</span>
+                        {value === item.name && (
                           <span className="text-[10px] font-mono text-[var(--color-accent)]">SELECTED</span>
                         )}
                       </button>

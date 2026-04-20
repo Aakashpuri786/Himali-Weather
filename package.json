@@ -1,12 +1,12 @@
 {
-  "name": "placeholder-model-1",
+  "name": "himali-weather",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "prebuild": "node scripts/generate-sitemap.mjs",
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/generate-static-pages.mjs",
     "seo:sitemap": "node scripts/generate-sitemap.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
